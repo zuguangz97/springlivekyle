@@ -3,10 +3,8 @@ package net.nvsoftware.springlive.controller;
 import net.nvsoftware.springlive.model.Product;
 import net.nvsoftware.springlive.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 
 @RestController
@@ -15,9 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
     @Autowired
     private ProductService productService;
-    @PostMapping("/save")
+    @PostMapping("")
     public Product save(@RequestBody Product product) {
         productService.save(product);
         return product;
+    }
+    @GetMapping("")
+    public List<Product> getAllProducts() {
+        return productService.getAll();
+    }
+    @GetMapping("/{id}")
+    public Product getProductById(@PathVariable String id) {
+        return productService.getById(id);
+    }
+    @DeleteMapping("/{id}")
+    public String deleteById(@PathVariable String id) {
+        return productService.deleteByID(id);
     }
 }
