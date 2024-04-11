@@ -1,9 +1,10 @@
 package net.nvsoftware.springlive.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 
 public class Product {
-   
+
     private String productId;
     private String title;
     private String description;
