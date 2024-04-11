@@ -1,9 +1,13 @@
-package net.nvsoftware.springlive.model;
+package net.nvsoftware.springlive.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-public class Product {
-   
+@Entity
+@Table (name = "product_tb")
+public class ProductEntity {
+    @Id
     private String productId;
     private String title;
     private String description;
