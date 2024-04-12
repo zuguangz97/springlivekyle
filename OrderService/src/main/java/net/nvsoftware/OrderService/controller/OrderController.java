@@ -1,5 +1,6 @@
 package net.nvsoftware.OrderService.controller;
 
+import lombok.extern.log4j.Log4j2;
 import net.nvsoftware.OrderService.entity.OrderEntity;
 import net.nvsoftware.OrderService.model.OrderRequest;
 import net.nvsoftware.OrderService.service.OrderService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Log4j2
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
@@ -16,7 +18,9 @@ public class OrderController {
 
     @PostMapping("/placeOrder")
     public ResponseEntity<Long> placeOrder(@RequestBody OrderRequest orderRequest) {
+        log.info("Start: OrderService Controller placeOrder");
         long orderId = orderService.placeOrder(orderRequest);
+        log.info("End: OrderService Controller placeOrder");
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
