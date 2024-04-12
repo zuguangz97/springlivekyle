@@ -1,6 +1,7 @@
 package net.nvsoftware.OrderService.service;
 
 import lombok.extern.log4j.Log4j2;
+import net.nvsoftware.OrderService.client.ProductServiceFeignClient;
 import net.nvsoftware.OrderService.entity.OrderEntity;
 import net.nvsoftware.OrderService.model.OrderRequest;
 import net.nvsoftware.OrderService.repository.OrderRepository;
@@ -14,21 +15,34 @@ import java.time.Instant;
 public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private ProductServiceFeignClient productServiceFeignClient;
 
     @Override
     public long placeOrder(OrderRequest orderRequest) {
         log.info("Start: OrderService placeOrder");
+
+        // Check if quantity is 0 or less, as 'long' cannot be null
+        if (orderRequest.getQuantity() <= 0) {
+            log.error("Invalid quantity: " + orderRequest.getQuantity());
+            throw new IllegalArgumentException("Quantity must be greater than zero.");
+        }
+
         //use OrderService to create a OrderEntity with Status Created, ORM JPA save to database
         OrderEntity orderEntity = OrderEntity.builder()
                 .productId(orderRequest.getProductId())
-                .productQuantity(orderRequest.getQuantity())
+                .quantity(orderRequest.getQuantity())
                 .totalAmount(orderRequest.getTotalAmount())
-                .orderTime(Instant.now())
+                .orderDate(Instant.now())
                 .orderStatus("CREATED")
                 .build();
         orderRepository.save(orderEntity);
         log.info("Process: OrderService placeOrder save OrderEntity with orderId: " + orderEntity.getId());
         //call ProductService to check product quantity, if ok reduce it, else throw not enough
+        productServiceFeignClient.reduceQuantity(orderEntity.getProductId(), orderEntity.getQuantity());
+        log.info("Process: OrderService placeOrder FeignCall ProductService reduceQuantity");
+
+
         //call PaymentService to charge, if success, make order paid,else cancelled
         log.info("End: OrderService placeOrder");
         return orderEntity.getId();
