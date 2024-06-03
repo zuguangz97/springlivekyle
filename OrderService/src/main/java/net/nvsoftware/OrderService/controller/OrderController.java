@@ -3,6 +3,7 @@ package net.nvsoftware.OrderService.controller;
 import lombok.extern.log4j.Log4j2;
 import net.nvsoftware.OrderService.entity.OrderEntity;
 import net.nvsoftware.OrderService.model.OrderRequest;
+import net.nvsoftware.OrderService.model.OrderResponse;
 import net.nvsoftware.OrderService.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,5 +25,9 @@ public class OrderController {
         return new ResponseEntity<>(orderId, HttpStatus.OK);
     }
 
-
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponse> getOrderDetailById(@PathVariable long orderId) {
+        OrderResponse orderResponse = orderService.getOrderDetailById(orderId);
+        return new ResponseEntity<>(orderResponse, HttpStatus.OK);
+    }
 }
