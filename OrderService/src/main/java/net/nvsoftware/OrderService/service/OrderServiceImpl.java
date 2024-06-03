@@ -86,12 +86,18 @@ public class OrderServiceImpl implements OrderService {
                 OrderResponse.ProductResponse.class
         );
 
+        OrderResponse.PaymentResponse paymentResponse = restTemplate.getForObject(
+                "http://localhost:8003/payment/" + orderEntity.getId(),
+                OrderResponse.PaymentResponse.class
+        );
+
         OrderResponse orderResponse = OrderResponse.builder()
                 .orderId(orderEntity.getId())
                 .orderDate(orderEntity.getOrderDate())
                 .orderStatus(orderEntity.getOrderStatus())
                 .totalAmount(orderEntity.getTotalAmount())
                 .productResponse(productResponse)
+                .paymentResponse(paymentResponse)
                 .build();
         log.info("End: OrderService getOrderDetailById");
         return orderResponse;
